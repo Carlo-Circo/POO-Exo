@@ -1,0 +1,42 @@
+class Produit:
+    def __init__(self, reference, nom, prix_ht):
+        self._reference = reference
+        self._nom       = nom
+        self._prix_ht   = prix_ht
+    def __str__(self):
+        return f"{self._nom} ({self._reference}) - {self._prix_ht}€ HT"
+
+class Panier:
+    def __init__(self):
+        self._produits = []
+    def ajouter(self, produit):
+        self._produits.append(produit)
+    @property
+    def total(self):
+        return round(sum(p._prix_ht for p in self._produits), 2)
+    def __str__(self):
+        return f"Panier({len(self._produits)} article(s) — total : {self.total}€)"
+    # ← tu ajouteras __iadd__ et __add__ ici
+    def __iadd__(self, produit):
+        self.ajouter(produit)
+        return self
+    
+    def __add__(self, other):
+        if not isinstance (other, Panier):
+            raise TypeError(f"Impossible de fusionner avec {type(other)}")
+        nouveau = Panier()
+        nouveau._produits = self._produits + other._produits
+        return nouveau
+    
+panier1 = Panier()
+panier2 = Panier()
+clavier = Produit("KB-001", "Clavier", 79.99)
+souris  = Produit("MS-001", "Souris", 49.99)
+
+panier1 += clavier
+panier1 += souris
+panier2 += souris
+panier_total = panier1 + panier2
+print(panier_total)
+print(panier1)
+print(panier2)  
